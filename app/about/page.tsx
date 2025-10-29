@@ -8,7 +8,7 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
+              imageSrc="/Sakuramiku.png"
               title="Figura Sakura Miku"
               bodyText="Figura oficial de Hatsune Miku. $20.000"
             />
@@ -16,14 +16,14 @@ export default function Home() {
 
           <Col md={4}>
             <Carta
-              imageSrc="/Angela"
+              imageSrc="/Hornet.jpg"
               title="Figura Hornet"
               bodyText="Figura Hornet de Hollow Knight:Silksong. $20.000"
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
+              imageSrc="/NendoroidHollowKnight.png"
               title="Figura Nendoroid The Knight"
               bodyText="Nendoroid Oficial de 'The Knight'. $20.000"
             />
@@ -33,7 +33,7 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
+              imageSrc="/LoRKeyChain+ArtBook.png"
               title="Pack Library of Ruina"
               bodyText="Set Llaveros + Artbook exclusivo. $25.000"
             />
@@ -41,14 +41,14 @@ export default function Home() {
 
           <Col md={4}>
             <Carta
-              imageSrc="/MagicBullet"
+              imageSrc="/PosterLoR.jpg"
               title="Poster Library of Ruina"
               bodyText="Poster Library of Ruina, Protagonizado por Binah, Roland y Gebura. $5.000"
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
+              imageSrc="/InvitacionLoR.jpg"
               title="Replica Invitacion LoR"
               bodyText="Replica de la invitacion a la biblioteca de Library of Ruina. $10.000"
             />
@@ -58,7 +58,7 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
+              imageSrc="/BasicCat.png"
               title="Gato Basico"
               bodyText="Gato Basico The Battle Cats. $5.000"
             />
@@ -66,14 +66,14 @@ export default function Home() {
 
           <Col md={4}>
             <Carta
-              imageSrc="/MagicBullet"
+              imageSrc="/AxeCat.png"
               title="Gato Hacha"
               bodyText="Gato Hacha de The Battle Cats. $5.000"
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
+              imageSrc="/DoomSlayer.png"
               title="Figura DoomSlayer"
               bodyText="Figura Oficial Doomslayer de Doom:Dark Ages. $20.000"
             />
@@ -83,7 +83,7 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
+              imageSrc="/medic.png"
               title="Figura Medic"
               bodyText="Figura del personaje Medic del Videojuego Team Fortress 2. $15.000"
             />
@@ -91,14 +91,14 @@ export default function Home() {
 
           <Col md={4}>
             <Carta
-              imageSrc="/MagicBullet"
+              imageSrc="/spy.png"
               title="Figura Spy"
               bodyText="Figura del personaje Spy del videojuego Team Fortress 2. $15.000"
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
+              imageSrc="/mambo.png"
               title="Figura Matikanetannhauser"
               bodyText="Figura de Matikanetannhauser de la serie Uma Musume. $30.000"
             />
@@ -108,7 +108,7 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
+              imageSrc="/gorda.png"
               title="Figura de Kasane Teto"
               bodyText="Figura de Kasane Teto del Programa Synthethizer V. $50.000"
             />
@@ -116,14 +116,14 @@ export default function Home() {
 
           <Col md={4}>
             <Carta
-              imageSrc="/MagicBullet"
+              imageSrc="/gengar.png"
               title="Peluche Gengar"
               bodyText="Peluche de Gengar de la saga Pokémon. $32.000"
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
+              imageSrc="/jimbo.png"
               title="Peluche Jimbo"
               bodyText="Peluche Jimbo del Videojuego Balatro. $15.000"
             />

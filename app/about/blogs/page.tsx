@@ -75,6 +75,32 @@ export default function Home() {
             </Link>
           </Carta>
         </Col>
+        {/*Sexto Blog*/}
+        <Col md={4} className="mb-5">
+          <Carta
+            imageSrc="/LimbusCompanyLogo.jpg"
+            title="Nueva Venta de Productos de Limbus Company"
+            bodyText="Presentamos nuestros nuevos productos del videojuego Gacha Limbus Company"
+            style={{ width: "30rem" }}
+          >
+            <Link href="/about/blogs/blog6">
+              <button className="btn btn-primary">Ver Detalles</button>
+            </Link>
+          </Carta>
+        </Col>
+        {/*Septimo Blog*/}
+        <Col md={4} className="mb-5">
+          <Carta
+            imageSrc="/UltrakillLogo.png"
+            title="Nueva Venta de Productos de Ultrakill"
+            bodyText="Presentamos nuevo merchandising de Ultrakill, protagonizado por V1 y V2"
+            style={{ width: "30rem" }}
+          >
+            <Link href="/about/blogs/blog7">
+              <button className="btn btn-primary">Ver Detalles</button>
+            </Link>
+          </Carta>
+        </Col>
       </div>
     </>
   );
