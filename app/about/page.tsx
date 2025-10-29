@@ -133,24 +133,77 @@ export default function Home() {
         <Row className="g-4 mb-4">
           <Col md={4}>
             <Carta
-              imageSrc="/VerticalSplit"
-              title="Placeholder"
-              bodyText="Placeholder Body"
+              imageSrc="/DonQuixote.png"
+              title="Peluche Don Quixote"
+              bodyText="Peluche Don Quixote del videojuego Limbus Company. $15.000 "
             />
           </Col>
 
           <Col md={4}>
             <Carta
-              imageSrc="/MagicBullet"
-              title="Placeholder"
-              bodyText="Placeholder Body"
+              imageSrc="/Ishmael.png"
+              title="Peluche Ishmael"
+              bodyText="Peluche Ishmael Del videojuego Limbus Company. $15.000 "
             />
           </Col>
           <Col md={4}>
             <Carta
-              imageSrc="/QueenOfHatred2"
-              title="Placeholder"
-              bodyText="Placeholder Body"
+              imageSrc="/HongLu.png"
+              title="Peluche Hong Lu"
+              bodyText="Peluche Hong Lu Del videojuego Limbus Company. $15.000"
+            />
+          </Col>
+        </Row>
+
+        {/*Placeholders por si quieren mas productos
+            si no, borran nomas xd*/}
+        {/*Septima Fila:*/}
+        <Row className="g-4 mb-4">
+          <Col md={4}>
+            <Carta
+              imageSrc="/Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
+            />
+          </Col>
+
+          <Col md={4}>
+            <Carta
+              imageSrc="Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
+            />
+          </Col>
+          <Col md={4}>
+            <Carta
+              imageSrc="Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
+            />
+          </Col>
+        </Row>
+        {/*Octava Fila:*/}
+        <Row className="g-4 mb-4">
+          <Col md={4}>
+            <Carta
+              imageSrc="/Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
+            />
+          </Col>
+
+          <Col md={4}>
+            <Carta
+              imageSrc="Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
+            />
+          </Col>
+          <Col md={4}>
+            <Carta
+              imageSrc="Placeholder"
+              title="PlaceholderBody"
+              bodyText="A"
             />
           </Col>
         </Row>
