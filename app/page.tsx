@@ -1,101 +1,101 @@
-import Image from "next/image";
+"use client"; 
+
+import { products } from '@/app/lib/data';
+import ProductCard from '@/app/components/ProductCard';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  
+  
+  useEffect(() => {
+    
+    if (typeof window !== 'undefined') {
+      const carousel = document.getElementById('carouselExampleFade');
+      if (carousel && (window as any).bootstrap) {
+        new (window as any).bootstrap.Carousel(carousel);
+      }
+    }
+  }, []);
+  
+  
+  const featuredProducts = products.slice(0, 9);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  return (
+    <>
+      
+      <section className="text-center" style={{ padding: '4rem 1rem', background: 'linear-gradient(135deg, #eaf1ff, #fff)' }}>
+        <h1 style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1rem' }}>
+          Bienvenido a Los Tralaleros
+        </h1>
+        <p className="lead fs-5" style={{ color: '#444' }}>
+          La más alta calidad en merchandasing de videojuegos
+        </p>
+      </section>
+
+      
+      <div id="carouselExampleFade" className="carousel slide carousel-fade" data-bs-ride="carousel" style={{ maxWidth: '100%', margin: '0 auto' }}>
+        <div className="carousel-inner" style={{ height: '400px', backgroundColor: '#333' }}>
+          
+          <div className="carousel-item active">
+            <Image 
+              src="/SilksongLogo.jpg" 
+              layout="fill" 
+              objectFit="cover" 
+              className="d-block w-100" 
+              alt="Hornet"
+              priority={true} 
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="carousel-caption d-none d-md-block" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '10px', borderRadius: '5px' }}>
+              <h5>Nueva Merch de Silksong</h5>
+              <p>Debido al lanzamiento de Hollow Knight: Silksong, hemos lanzado nueva Merch.</p>
+            </div>
+          </div>
+          
+          <div className="carousel-item">
+            <Image src="/DoomDarkAges.png" layout="fill" objectFit="cover" className="d-block w-100" alt="Doomslayer" />
+            <div className="carousel-caption d-none d-md-block" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '10px', borderRadius: '5px' }}>
+              <h5>Nueva Merch de Doom</h5>
+              <p>Con el nuevo lanzamiento de Doom The Dark Ages, lanzamos nueva merch.</p>
+            </div>
+          </div>
+          
+          <div className="carousel-item">
+            <Image src="/TheBattleCatsLogo.png" layout="fill" objectFit="cover" className="d-block w-100" alt="Battlecats" />
+            <div className="carousel-caption d-none d-md-block" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: '10px', borderRadius: '5px' }}>
+              <h5>Merch de Battlecats</h5>
+              <p>Colaboración oficial con The Battle Cats, ¡nueva merch ya disponible!</p>
+            </div>
+          </div>
+
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Anterior</span>
+        </button>
+        <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Siguiente</span>
+        </button>
+      </div>
+
+      
+      <section className="container py-5">
+        <h2 className="text-center mt-4 mb-4">Productos Destacados</h2>
+        <div className="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
+          {featuredProducts.map((product) => (
+            <div className="col" key={product.id}>
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-5 mb-4">
+          <Link href="/productos" legacyBehavior>
+            <a className="btn btn-primary btn-lg">Ver todo el catálogo</a>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
