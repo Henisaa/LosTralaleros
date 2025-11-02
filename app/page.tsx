@@ -108,7 +108,7 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-5 mb-4">
-          <Link href="/productos" legacyBehavior>
+          <Link href="/main/productos" legacyBehavior>
             <a className="btn btn-primary btn-lg">Ver todo el catálogo</a>
           </Link>
         </div>
