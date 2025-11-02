@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Navbar from "@/app/components/Navbar";
+import AppNavbar from "@/app/components/Navbar";
 import { CartProvider } from "@/app/about/context/CartContext";
 import Script from "next/script";
 
@@ -39,7 +39,7 @@ export default function RootLayout({
         }}
       >
         <CartProvider>
-          <Navbar></Navbar>
+          <AppNavbar></AppNavbar>
           <main style={{ flex: 1 }}>{children}</main>
           <footer className="text-center py-4 text-muted border-top mt-auto">
             © 2025 Los Tralaleros Corp.
