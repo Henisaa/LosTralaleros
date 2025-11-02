@@ -1,5 +1,5 @@
-import { products } from '@/app/lib/data';
-import ProductCard from '@/app/components/ProductCard';
+import { products } from "@/app/about/lib/data";
+import ProductCard from "@/app/components/ProductCard";
 
 export default function ProductGrid() {
   return (

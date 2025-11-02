@@ -1,8 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface CartItem {
   id: number;
@@ -14,52 +20,53 @@ interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: { id: number; name: string; price: number; img: string }, qty?: number) => void;
+  addToCart: (
+    product: { id: number; name: string; price: number; img: string },
+    qty?: number
+  ) => void;
   changeQty: (id: number, delta: number) => void;
   removeItem: (id: number) => void;
   cartCount: number;
 }
 
-
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) throw new Error('useCart debe ser usado dentro de un CartProvider');
+  if (!context)
+    throw new Error("useCart debe ser usado dentro de un CartProvider");
   return context;
 };
-
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-
   useEffect(() => {
     try {
-      const storedCart = localStorage.getItem('cart');
+      const storedCart = localStorage.getItem("cart");
       if (storedCart) {
         setCart(JSON.parse(storedCart));
       }
     } catch (error) {
       console.error("Error al cargar el carrito de localStorage", error);
-      localStorage.removeItem('cart'); // Limpiar si está corrupto
+      localStorage.removeItem("cart"); // Limpiar si está corrupto
     }
   }, []);
 
-  
   useEffect(() => {
-    
-    if (cart.length > 0 || localStorage.getItem('cart')) {
-      localStorage.setItem('cart', JSON.stringify(cart));
+    if (cart.length > 0 || localStorage.getItem("cart")) {
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
 
-  const addToCart = (product: { id: number; name: string; price: number; img: string }, qty: number = 1) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+  const addToCart = (
+    product: { id: number; name: string; price: number; img: string },
+    qty: number = 1
+  ) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
-        return prevCart.map(item =>
+        return prevCart.map((item) =>
           item.id === product.id ? { ...item, qty: item.qty + qty } : item
         );
       } else {
@@ -69,15 +76,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const changeQty = (id: number, delta: number) => {
-    setCart(prevCart =>
-      prevCart.map(item =>
+    setCart((prevCart) =>
+      prevCart.map((item) =>
         item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
       )
     );
   };
 
   const removeItem = (id: number) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== id));
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   const cartCount = cart.reduce((total, item) => total + item.qty, 0);
@@ -92,7 +99,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
-
 
 export const CartDropdown = () => {
   const { cart, changeQty, removeItem, cartCount } = useCart();
@@ -116,42 +122,69 @@ export const CartDropdown = () => {
       <ul
         className="dropdown-menu dropdown-menu-end p-3"
         aria-labelledby="cartDropdown"
-        style={{ minWidth: '350px' }}
+        style={{ minWidth: "350px" }}
       >
         {cart.length === 0 ? (
-          <li><p className="text-center text-muted mb-0">El carrito está vacío</p></li>
+          <li>
+            <p className="text-center text-muted mb-0">El carrito está vacío</p>
+          </li>
         ) : (
           <>
             {cart.map((item) => (
-              <li key={item.id} className="list-group-item d-flex align-items-center p-2">
-                <Image 
-                  src={item.img} 
-                  alt={item.name} 
-                  width={48} 
-                  height={48} 
-                  className="me-2 rounded" 
-                  style={{ objectFit: 'cover', background: '#f8f9fa' }} 
+              <li
+                key={item.id}
+                className="list-group-item d-flex align-items-center p-2"
+              >
+                <Image
+                  src={item.img}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="me-2 rounded"
+                  style={{ objectFit: "cover", background: "#f8f9fa" }}
                 />
-                <div className="flex-grow-1" style={{minWidth: 0}}>
-                  <div className="fw-semibold small text-truncate">{item.name}</div>
-                  <div className="small text-muted">x{item.qty} · ${item.price.toLocaleString('es-CL')}</div>
+                <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                  <div className="fw-semibold small text-truncate">
+                    {item.name}
+                  </div>
+                  <div className="small text-muted">
+                    x{item.qty} · ${item.price.toLocaleString("es-CL")}
+                  </div>
                 </div>
                 <div className="d-flex align-items-center">
                   <div className="btn-group btn-group-sm ms-2" role="group">
-                    <button className="btn btn-outline-secondary" onClick={() => changeQty(item.id, -1)}>-</button>
-                    <button className="btn btn-outline-secondary" onClick={() => changeQty(item.id, 1)}>+</button>
+                    <button
+                      className="btn btn-outline-secondary"
+                      onClick={() => changeQty(item.id, -1)}
+                    >
+                      -
+                    </button>
+                    <button
+                      className="btn btn-outline-secondary"
+                      onClick={() => changeQty(item.id, 1)}
+                    >
+                      +
+                    </button>
                   </div>
-                  <button className="btn btn-sm btn-danger ms-2" title="Eliminar" onClick={() => removeItem(item.id)}>X</button>
+                  <button
+                    className="btn btn-sm btn-danger ms-2"
+                    title="Eliminar"
+                    onClick={() => removeItem(item.id)}
+                  >
+                    X
+                  </button>
                 </div>
               </li>
             ))}
-            <li><hr className="dropdown-divider" /></li>
+            <li>
+              <hr className="dropdown-divider" />
+            </li>
             <li className="d-flex justify-content-between align-items-center fw-bold px-2">
               <span>Total:</span>
-              <span>${total.toLocaleString('es-CL')}</span>
+              <span>${total.toLocaleString("es-CL")}</span>
             </li>
             <li className="mt-3 text-center">
-              <Link href="/pago" className="btn btn-success w-100">
+              <Link href="/main/pago" className="btn btn-success w-100">
                 Pagar todo
               </Link>
             </li>
