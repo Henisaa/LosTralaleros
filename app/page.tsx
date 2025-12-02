@@ -1,13 +1,24 @@
 "use client";
 
+import { useEffect, useState } from "react"; 
 import { Carousel } from "react-bootstrap";
-import { products } from "@/app/about/lib/data";
+import { getProductos, Producto } from "@/app/services/api";
 import ProductCard from "@/app/components/ProductCard";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
-  const featuredProducts = products.slice(0, 9);
+
+  const [featuredProducts, setFeaturedProducts] = useState<Producto[]>([]);
+
+  useEffect(() => {
+    const fetchAndSetProducts = async () => {
+      const data = await getProductos();
+      
+      setFeaturedProducts(data.slice(0, 9));
+    };
+    fetchAndSetProducts();
+  }, []);
 
   return (
     <>
@@ -106,6 +117,12 @@ export default function Home() {
               <ProductCard product={product} />
             </div>
           ))}
+          {/* Mensaje de carga si no hay productos aún */}
+          {featuredProducts.length === 0 && (
+            <div className="text-center w-100">
+              <p>Cargando productos...</p>
+            </div>
+          )}
         </div>
         <div className="text-center mt-5 mb-4">
           <Link href="/main/productos" legacyBehavior>
@@ -116,4 +133,3 @@ export default function Home() {
     </>
   );
 }
-
