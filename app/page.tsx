@@ -1,21 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 import { Carousel } from "react-bootstrap";
-import { getProductos, Producto } from "@/app/services/api";
+import { getProductos, Producto } from "@/app/services/api"; 
 import ProductCard from "@/app/components/ProductCard";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
-
   const [featuredProducts, setFeaturedProducts] = useState<Producto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAndSetProducts = async () => {
-      const data = await getProductos();
-      
-      setFeaturedProducts(data.slice(0, 9));
+      try {
+        const data = await getProductos();
+
+        setFeaturedProducts(data.slice(0, 9));
+      } catch (error) {
+        console.error("Error al cargar productos destacados:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchAndSetProducts();
   }, []);
@@ -37,6 +43,7 @@ export default function Home() {
         </p>
       </section>
 
+      
       <Carousel fade style={{ maxWidth: "100%", margin: "0 auto" }}>
         <Carousel.Item style={{ height: "400px", backgroundColor: "#333" }}>
           <Image
@@ -109,21 +116,30 @@ export default function Home() {
         </Carousel.Item>
       </Carousel>
 
+      
       <section className="container py-5">
         <h2 className="text-center mt-4 mb-4">Productos Destacados</h2>
-        <div className="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
-          {featuredProducts.map((product) => (
-            <div className="col" key={product.id}>
-              <ProductCard product={product} />
-            </div>
-          ))}
-          {/* Mensaje de carga si no hay productos aún */}
-          {featuredProducts.length === 0 && (
-            <div className="text-center w-100">
-              <p>Cargando productos...</p>
-            </div>
-          )}
-        </div>
+        
+        {isLoading ? (
+          <div className="text-center py-5">
+            <p>Cargando productos destacados...</p>
+          </div>
+        ) : (
+          <div className="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {featuredProducts.map((product) => (
+              <div className="col" key={product.id}>
+                <ProductCard product={product as any} />
+              </div>
+            ))}
+            
+            {featuredProducts.length === 0 && (
+              <div className="col-12 text-center">
+                <p>No hay productos destacados disponibles en este momento.</p>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="text-center mt-5 mb-4">
           <Link href="/main/productos" legacyBehavior>
             <a className="btn btn-primary btn-lg">Ver todo el catálogo</a>
