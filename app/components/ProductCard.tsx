@@ -3,10 +3,18 @@ import { Card } from "react-bootstrap";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/about/context/CartContext";
-import { Product } from "@/app/about/lib/data";
+
+
+export interface ProductItem {
+  id: number;
+  name: string;
+  price: number;
+  img: string;
+  
+}
 
 type CartaProps = {
-  product: Product;
+  product: ProductItem; 
 };
 
 function ProductCard({ product }: CartaProps) {
