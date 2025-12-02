@@ -128,7 +128,7 @@ export default function Home() {
           <div className="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
             {featuredProducts.map((product) => (
               <div className="col" key={product.id}>
-                <ProductCard product={product as any} />
+                <ProductCard product={product} />
               </div>
             ))}
             

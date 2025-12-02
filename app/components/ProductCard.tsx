@@ -38,7 +38,7 @@ function ProductCard({ product }: CartaProps) {
       <Link href={`/main/productos/${product.id}`} passHref legacyBehavior>
         <a className="text-decoration-none text-dark d-block">
           <Image
-            src={product.img || "/placeholder.png"} // Fallback si no hay imagen
+            src={product.img || "/placeholder.png"} 
             alt={product.name}
             width={300}
             height={220}
