@@ -1,8 +1,8 @@
-import ProductCard, { ProductItem } from "@/app/components/ProductCard";
-
+import ProductCard from "@/app/components/ProductCard";
+import { Producto } from "@/app/services/api"; 
 
 type ProductGridProps = {
-  products: ProductItem[];
+  products: Producto[];
 };
 
 export default function ProductGrid({ products }: ProductGridProps) {
