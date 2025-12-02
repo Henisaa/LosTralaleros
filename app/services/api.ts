@@ -13,6 +13,20 @@ export interface Producto {
   images?: string[];
 }
 
+export interface OrdenData {
+  nombre: string;
+  email: string;
+  direccion: string;
+  telefono?: string;
+  productos: {
+    id: number;
+    quantity: number;
+  }[];
+  total: number;
+  metodoPago: string;
+}
+
+
 export const getProductos = async (): Promise<Producto[]> => {
   try {
 
