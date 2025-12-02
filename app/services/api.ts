@@ -1,33 +1,21 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+
 export interface Producto {
   id: number;
   name: string;
   price: number;
   img: string;
-  description: string;
-  category: string;
-}
-
-
-export interface OrdenData {
-  customerEmail: string;
-  shippingAddress: string;
-  totalAmount: number;
-  items: {
-    productoId: number;
-    quantity: number;
-    priceAtPurchase: number;
-    productName?: string; 
-  }[];
-  pago: {
-    paymentMethod: string;
-    status: string;
-  };
+  description?: string;
+  category?: string;
+  
+  desc?: string; 
+  images?: string[];
 }
 
 export const getProductos = async (): Promise<Producto[]> => {
   try {
+
     const res = await fetch(`${API_URL}/api/productos`, { cache: 'no-store' });
     if (!res.ok) throw new Error("Fallo al obtener productos");
     return await res.json();
@@ -36,7 +24,6 @@ export const getProductos = async (): Promise<Producto[]> => {
     return [];
   }
 };
-
 
 export const crearOrden = async (ordenData: OrdenData) => {
   const res = await fetch(`${API_URL}/api/ordenes`, {

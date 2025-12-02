@@ -3,18 +3,10 @@ import { Card } from "react-bootstrap";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/about/context/CartContext";
-
-
-export interface ProductItem {
-  id: number;
-  name: string;
-  price: number;
-  img: string;
-  
-}
+import { Producto } from "@/app/services/api";
 
 type CartaProps = {
-  product: ProductItem; 
+  product: Producto; 
 };
 
 function ProductCard({ product }: CartaProps) {
@@ -44,12 +36,9 @@ function ProductCard({ product }: CartaProps) {
       onMouseOut={(e) => (e.currentTarget.style.transform = "translateY(0px)")}
     >
       <Link href={`/main/productos/${product.id}`} passHref legacyBehavior>
-        <a
-          className="text-decoration-none text-dark d-block"
-          style={{ textDecoration: "none" }}
-        >
+        <a className="text-decoration-none text-dark d-block">
           <Image
-            src={product.img}
+            src={product.img || "/placeholder.png"} // Fallback si no hay imagen
             alt={product.name}
             width={300}
             height={220}
