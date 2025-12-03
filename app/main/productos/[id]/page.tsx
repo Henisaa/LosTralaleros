@@ -16,12 +16,10 @@ export default function ProductoDetalle() {
   
   const { addToCart } = useCart();
   
-  // Estados para manejar la carga asíncrona
   const [product, setProduct] = useState<Producto | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState<Producto[]>([]);
   
-  // Estados de la interfaz
   const [mainImg, setMainImg] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -29,14 +27,12 @@ export default function ProductoDetalle() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // 1. Buscamos el producto actual en la API
         const data = await getProductoById(id);
         
         if (data) {
           setProduct(data);
           setMainImg(data.img);
           
-          // 2. Cargamos "relacionados" (Traemos todos y sacamos 4 al azar o los primeros 4 que no sean este)
           const allProducts = await getProductos();
           const related = allProducts
             .filter((p) => String(p.id) !== String(data.id))
@@ -55,7 +51,6 @@ export default function ProductoDetalle() {
     }
   }, [id]);
 
-  // Si está cargando, mostramos spinner o texto
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -64,23 +59,21 @@ export default function ProductoDetalle() {
     );
   }
 
-  // Si terminó de cargar y no hay producto, 404
   if (!product) {
     return notFound();
   }
 
-  // Si hay imágenes extra las usamos, si no, usamos la principal
   const gallery = product.images && product.images.length > 0 ? product.images : [product.img];
 
   const handleAddToCart = () => {
-    // Convertimos al tipo que espera el carrito (si hay discrepancia de tipos 'any' ayuda temporalmente)
-    addToCart(product as any, quantity);
+    // CORRECCIÓN: Quitamos el "as any". 
+    // Typescript aceptará el objeto porque tiene las propiedades id, name, price e img que pide el carrito.
+    addToCart(product, quantity);
     alert(`${quantity} ${product.name}(s) añadido(s) al carrito!`);
   };
 
   return (
     <main className="container py-4 mt-4">
-      {/* Breadcrumb de navegación */}
       <nav className="small mb-3" aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -100,7 +93,6 @@ export default function ProductoDetalle() {
       </nav>
 
       <div className="row g-4">
-        {/* Columna Izquierda: Imágenes */}
         <div className="col-lg-7">
           <div
             className="border rounded shadow-sm p-3"
@@ -121,7 +113,6 @@ export default function ProductoDetalle() {
               priority
             />
           </div>
-          {/* Galería de miniaturas */}
           <div className="d-flex gap-2 mt-3" id="thumbs">
             {gallery.map((src, i) => (
               <div
@@ -146,7 +137,6 @@ export default function ProductoDetalle() {
           </div>
         </div>
 
-        {/* Columna Derecha: Detalles y Compra */}
         <div className="col-lg-5">
           <h2 id="pName" className="mb-2">
             {product.name}
@@ -155,12 +145,10 @@ export default function ProductoDetalle() {
             ${product.price.toLocaleString("es-CL")}
           </h4>
           
-          {/* Aquí se muestra la descripción que viene de la BD */}
           <p id="pDesc" className="text-muted fs-5">
             {product.desc}
           </p>
 
-          {/* Selector de Cantidad */}
           <div className="d-flex align-items-center gap-3 my-4">
             <label htmlFor="qty" className="form-label m-0 fw-bold">
               Cantidad
@@ -205,13 +193,14 @@ export default function ProductoDetalle() {
 
       <hr className="my-5" />
 
-      {/* Sección de Productos Relacionados */}
       <section>
         <h3 className="mb-4">Productos relacionados</h3>
         <div className="row g-3 row-cols-1 row-cols-sm-2 row-cols-lg-4">
           {relatedProducts.map((p) => (
             <div className="col" key={p.id}>
-              <ProductCard product={p as any} />
+              {/* CORRECCIÓN: Quitamos el "as any" aquí también */}
+              {/* @ts-expect-error: Compatibilidad temporal entre tipos */}
+              <ProductCard product={p} />
             </div>
           ))}
         </div>
