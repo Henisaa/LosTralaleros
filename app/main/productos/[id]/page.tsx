@@ -5,7 +5,7 @@ import { useParams, notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-// Importamos el nuevo servicio y tipos
+// 1. CAMBIO: Importamos desde el nuevo servicio en lugar de 'data.ts'
 import { getProductoById, getProductos, Producto } from "@/app/services/productService";
 import { useCart } from "@/app/about/context/CartContext";
 import ProductCard from "@/app/components/ProductCard";
@@ -16,6 +16,7 @@ export default function ProductoDetalle() {
   
   const { addToCart } = useCart();
   
+  // 2. CAMBIO: Estados para manejar la carga de datos (antes era una variable directa)
   const [product, setProduct] = useState<Producto | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState<Producto[]>([]);
@@ -23,6 +24,7 @@ export default function ProductoDetalle() {
   const [mainImg, setMainImg] = useState("");
   const [quantity, setQuantity] = useState(1);
 
+  // 3. CAMBIO: useEffect para pedir los datos al Backend cuando carga la página
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,6 +35,7 @@ export default function ProductoDetalle() {
           setProduct(data);
           setMainImg(data.img);
           
+          // Cargar productos relacionados
           const allProducts = await getProductos();
           const related = allProducts
             .filter((p) => String(p.id) !== String(data.id))
@@ -51,6 +54,7 @@ export default function ProductoDetalle() {
     }
   }, [id]);
 
+  // 4. CAMBIO: Pantalla de carga mientras esperamos la API
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -66,8 +70,10 @@ export default function ProductoDetalle() {
   const gallery = product.images && product.images.length > 0 ? product.images : [product.img];
 
   const handleAddToCart = () => {
-    // CORRECCIÓN: Quitamos el "as any". 
-    // Typescript aceptará el objeto porque tiene las propiedades id, name, price e img que pide el carrito.
+    // 5. CAMBIO: Validación de seguridad para evitar errores en Vercel
+    if (!product) return; 
+
+    // Aquí ya no necesitamos "as any" porque TypeScript sabe que product existe
     addToCart(product, quantity);
     alert(`${quantity} ${product.name}(s) añadido(s) al carrito!`);
   };
@@ -198,8 +204,6 @@ export default function ProductoDetalle() {
         <div className="row g-3 row-cols-1 row-cols-sm-2 row-cols-lg-4">
           {relatedProducts.map((p) => (
             <div className="col" key={p.id}>
-              {/* CORRECCIÓN: Quitamos el "as any" aquí también */}
-              {/* @ts-expect-error: Compatibilidad temporal entre tipos */}
               <ProductCard product={p} />
             </div>
           ))}
