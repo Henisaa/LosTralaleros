@@ -2,26 +2,50 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+// URL Base del microservicio Spring Boot
+const API_URL = "http://localhost:8080/api/v1/users";
+
+// Llamada al backend
+async function loginUser(email, password) {
+  const res = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  return res.text(); // backend responde con texto plano
+}
+
 export default function LoginPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (sessionStorage.getItem("loggedIn") === "true") router.push("/");
+    if (sessionStorage.getItem("loggedIn") === "true") {
+      router.push("/");
+    }
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    if (!user) return alert("No hay usuarios registrados.");
 
-    if (email === user.email && password === user.password) {
-      sessionStorage.setItem("loggedIn", "true");
-      alert("¡Login exitoso!");
-      router.push("/");
-    } else {
-      alert("Correo o contraseña incorrectos.");
+    try {
+      const response = await loginUser(email, password);
+
+      if (response.includes("Login correcto")) {
+        sessionStorage.setItem("loggedIn", "true");
+        sessionStorage.setItem("email", email);
+
+        alert("¡Login exitoso!");
+        router.push("/");
+      } else {
+        alert(response);
+      }
+
+    } catch (error) {
+      alert("Error al iniciar sesión.");
     }
   };
 
@@ -41,6 +65,7 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleLogin}>
+          
           <div className="mb-3 text-start">
             <label className="form-label">Correo electrónico</label>
             <input

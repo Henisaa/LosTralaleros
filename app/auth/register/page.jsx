@@ -9,8 +9,27 @@ const regionesYcomunas = {
   "Metropolitana de Santiago": ["Santiago", "Puente Alto", "Maipú"],
 };
 
+// URL Base del microservicio Spring Boot
+const API_URL = "http://localhost:8080/api/v1/users";
+
+// Llamada al backend
+async function registerUser(email, password) {
+  const res = await fetch(`${API_URL}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nombre: email.split("@")[0],
+      email: email,
+      password: password,
+    }),
+  });
+
+  return res.text();
+}
+
 export default function RegisterPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -23,18 +42,24 @@ export default function RegisterPage() {
     }
   }, []);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const emailRegex = /^[\w.-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
     if (!emailRegex.test(email)) return alert("Correo inválido");
-
     if (password !== password2) return alert("Las contraseñas no coinciden");
     if (!region || !comuna) return alert("Seleccione región y comuna");
 
-    sessionStorage.setItem("user", JSON.stringify({ email, password, region, comuna }));
-    alert("Registro exitoso");
-    router.push("/auth/login");
+    try {
+      const response = await registerUser(email, password);
+      alert(response);
+
+      if (response.includes("correctamente")) {
+        router.push("/auth/login");
+      }
+    } catch (error) {
+      alert("Error al registrar usuario.");
+    }
   };
 
   return (
@@ -53,6 +78,7 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleRegister}>
+          
           <div className="mb-3 text-start">
             <label className="form-label">Correo electrónico</label>
             <input
@@ -115,7 +141,9 @@ export default function RegisterPage() {
               required
             >
               <option value="">Seleccione una comuna</option>
-              {region && regionesYcomunas[region].map((c) => <option key={c}>{c}</option>)}
+              {region && regionesYcomunas[region].map((c) => (
+                <option key={c}>{c}</option>
+              ))}
             </select>
           </div>
 
