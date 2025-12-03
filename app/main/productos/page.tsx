@@ -1,7 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ProductGrid from "@/app/components/ProductGrid";
-import { products } from "@/app/about/lib/data"; // 1. Importamos los productos aquí
+// Importamos desde el NUEVO servicio
+import { getProductos, Producto } from "@/app/services/productService";
 
 export default function ProductosPage() {
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAndSetProducts = async () => {
+      try {
+        const data = await getProductos();
+        setProductos(data);
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAndSetProducts();
+  }, []);
+
   return (
     <>
       <section
@@ -16,8 +37,14 @@ export default function ProductosPage() {
         </p>
       </section>
 
-      {/* 2. Le pasamos la lista completa al grid */}
-      <ProductGrid products={products} />
+      {/* Renderizado condicional: Cargando o Grid */}
+      {loading ? (
+        <div className="text-center py-5">
+          <p className="fs-4 text-muted">Cargando catálogo...</p>
+        </div>
+      ) : (
+        <ProductGrid products={productos} />
+      )}
     </>
   );
 }

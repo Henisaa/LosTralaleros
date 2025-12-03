@@ -1,21 +1,38 @@
-"use client"; // <--- ¡Importante! Porque usaremos estado (botones)
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductGrid from "@/app/components/ProductGrid";
-import { products } from "@/app/about/lib/data";
-import { Product } from "@/app/about/lib/data";
+// Importamos desde el NUEVO servicio
+import { getProductos, getProductosPorCategoria, Producto } from "@/app/services/productService";
 
 export default function CategoriasPage() {
-  // 1. Creamos un "estado" para guardar la categoría seleccionada
   const [categoriaActual, setCategoriaActual] = useState("Todos");
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 2. Filtramos la lista de productos según el estado
-  const productosFiltrados = products.filter((product: Product) => {
-    if (categoriaActual === "Todos") {
-      return true; // Si es "Todos", los mostramos todos
-    }
-    return product.category === categoriaActual; // Si no, filtramos
-  });
+  // Este efecto se ejecuta cada vez que cambia 'categoriaActual'
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        let data;
+        if (categoriaActual === "Todos") {
+          // Traemos todos
+          data = await getProductos();
+        } else {
+          // Usamos el endpoint de búsqueda del backend
+          data = await getProductosPorCategoria(categoriaActual);
+        }
+        setProductos(data);
+      } catch (error) {
+        console.error("Error filtrando productos:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [categoriaActual]);
 
   return (
     <>
@@ -30,7 +47,7 @@ export default function CategoriasPage() {
           Filtrar productos por categoría.
         </p>
 
-        {/* 3. ¡Tus botones! */}
+        {/* Botones de Categoría */}
         <div className="d-flex justify-content-center gap-2 mt-4">
           <button
             className={`btn ${
@@ -75,8 +92,14 @@ export default function CategoriasPage() {
         </div>
       </section>
 
-      {/* 4. Le pasamos solo los productos filtrados al ProductGrid */}
-      <ProductGrid products={productosFiltrados} />
+      {/* Grid de Productos */}
+      {isLoading ? (
+        <div className="text-center py-5">
+          <p className="fs-4 text-muted">Cargando productos...</p>
+        </div>
+      ) : (
+        <ProductGrid products={productos} />
+      )}
     </>
   );
 }
