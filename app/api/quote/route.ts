@@ -1,15 +1,13 @@
-export const runtime = "nodejs";
-
 import { NextResponse } from "next/server";
 
 type Holiday = {
   nombre: string;
-  fecha: string;
+  fecha: string; // YYYY-MM-DD
 };
 
 const INTERNAL_TOKEN = process.env.CHECKOUT_API_TOKEN;
 
-// Utils
+// ---------- Utils ----------
 function isWeekend(dateStr: string) {
   const d = new Date(dateStr + "T00:00:00");
   const day = d.getDay();
@@ -24,27 +22,35 @@ function addDays(dateStr: string, days: number) {
 
 async function fetchHolidays(year: number): Promise<Holiday[]> {
   const url = `https://apis.digital.gob.cl/fl/feriados/${year}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { next: { revalidate: 3600 } });
 
   if (!res.ok) {
-    throw new Error("Error consultando feriados");
+    throw new Error("Error consultando API de feriados");
   }
   return res.json();
 }
 
+// ---------- Endpoint ----------
 export async function POST(req: Request) {
-  // 🔐 Seguridad
+  // 🔐 Protección del backend
   const auth = req.headers.get("authorization");
   if (!auth || auth !== `Bearer ${INTERNAL_TOKEN}`) {
-    return NextResponse.json({ ok: false, error: "No autorizado" }, { status: 401 });
+    return NextResponse.json(
+      { ok: false, error: "No autorizado" },
+      { status: 401 }
+    );
   }
 
   try {
-    const { shippingDate, shippingType = "standard", cartTotal = 0 } = await req.json();
+    const {
+      shippingDate,
+      shippingType = "standard",
+      cartTotal = 0,
+    } = await req.json();
 
     if (!shippingDate || !/^\d{4}-\d{2}-\d{2}$/.test(shippingDate)) {
       return NextResponse.json(
-        { ok: false, error: "Fecha inválida" },
+        { ok: false, error: "Fecha de despacho inválida" },
         { status: 400 }
       );
     }
@@ -52,20 +58,21 @@ export async function POST(req: Request) {
     const year = Number(shippingDate.substring(0, 4));
     const holidays = await fetchHolidays(year);
 
-    const holiday = holidays.find(h => h.fecha === shippingDate) || null;
+    const holiday = holidays.find((h) => h.fecha === shippingDate) || null;
     const weekend = isWeekend(shippingDate);
 
     let allowPayment = true;
     let allowExpress = true;
     let finalShippingDate = shippingDate;
-    let message = "Fecha válida.";
+    let message = "Fecha de despacho válida.";
 
     if (holiday || weekend) {
       allowExpress = false;
       finalShippingDate = addDays(shippingDate, 1);
+
       message = holiday
-        ? `Feriado legal: ${holiday.nombre}`
-        : "Fin de semana";
+        ? `La fecha seleccionada es feriado legal (${holiday.nombre}).`
+        : "La fecha seleccionada cae en fin de semana.";
 
       if (shippingType === "express") {
         allowPayment = false;
@@ -73,6 +80,7 @@ export async function POST(req: Request) {
     }
 
     const shippingCost = shippingType === "express" ? 5990 : 2990;
+    const totalWithShipping = cartTotal + shippingCost;
 
     return NextResponse.json({
       ok: true,
@@ -82,13 +90,12 @@ export async function POST(req: Request) {
       allowExpress,
       finalShippingDate,
       shippingCost,
-      totalWithShipping: cartTotal + shippingCost,
-      message
+      totalWithShipping,
+      message,
     });
-
   } catch {
     return NextResponse.json(
-      { ok: false, error: "Error interno" },
+      { ok: false, error: "Error interno del servidor" },
       { status: 500 }
     );
   }
