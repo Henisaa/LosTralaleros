@@ -5,6 +5,13 @@ type Holiday = {
   fecha: string; // YYYY-MM-DD
 };
 
+// Agregamos esto para complacer al Linter y evitar el "any"
+interface ApiHoliday {
+  date: string;
+  title: string;
+  extra?: string; 
+}
+
 // ---------- Utils ----------
 
 function isWeekend(dateStr: string): boolean {
@@ -14,9 +21,9 @@ function isWeekend(dateStr: string): boolean {
   return day === 0 || day === 6;
 }
 
-// NUEVA FUNCIÓN (Reemplaza a 'addDays'): Busca inteligentemente el siguiente día hábil
 function getNextBusinessDay(startDateStr: string, holidays: Holiday[]): string {
-  let d = new Date(startDateStr + "T00:00:00");
+  // CORRECCIÓN 1: Usamos 'const' en lugar de 'let'
+  const d = new Date(startDateStr + "T00:00:00");
   let safety = 0;
   
   while (safety < 365) {
@@ -37,7 +44,6 @@ function getNextBusinessDay(startDateStr: string, holidays: Holiday[]): string {
   return startDateStr;
 }
 
-// NUEVA API (Boostr): Trae los feriados del año específico
 async function fetchHolidays(year: number): Promise<Holiday[]> {
   const url = `https://api.boostr.cl/holidays/${year}.json`;
   
@@ -55,8 +61,8 @@ async function fetchHolidays(year: number): Promise<Holiday[]> {
     const json = await res.json();
     const listaRaw = json.data || [];
 
-    // Mapeamos los datos de Boostr (date/title) a nuestro formato
-    const holidays: Holiday[] = listaRaw.map((item: any) => ({
+    // CORRECCIÓN 2: Usamos el tipo explícito 'ApiHoliday' en vez de 'any'
+    const holidays: Holiday[] = listaRaw.map((item: ApiHoliday) => ({
       fecha: item.date,
       nombre: item.title
     }));
@@ -103,7 +109,6 @@ export async function POST(req: Request) {
     if (holiday || weekend) {
       allowExpress = false;
       
-      // AQUÍ USAMOS LA NUEVA FUNCIÓN (NO uses addDays)
       finalShippingDate = getNextBusinessDay(shippingDate, holidays);
 
       if (holiday) {
