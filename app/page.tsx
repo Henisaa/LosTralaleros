@@ -1,151 +1,72 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Carousel } from "react-bootstrap";
-import { getProductos, Producto } from "@/app/services/api"; 
-import ProductCard from "@/app/components/ProductCard";
-import Image from "next/image";
-import Link from "next/link";
+import { useCart } from "@/app/about/context/CartContext";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, FormEvent } from "react";
 
-export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<Producto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const API_TOKEN = "los-tralaleros-2025";
+
+export default function PagoPage() {
+  const { cart } = useCart();
+  const router = useRouter();
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  const [shippingDate, setShippingDate] = useState("");
+  const [shippingType, setShippingType] = useState("standard");
+  const [quote, setQuote] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  const fetchQuote = async () => {
+    const res = await fetch("/api/quote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_TOKEN}`
+      },
+      body: JSON.stringify({ shippingDate, shippingType, cartTotal: total })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error);
+      setQuote(null);
+      return;
+    }
+    setQuote(data);
+  };
 
   useEffect(() => {
-    const fetchAndSetProducts = async () => {
-      try {
-        const data = await getProductos();
+    if (shippingDate) fetchQuote();
+  }, [shippingDate, shippingType]);
 
-        setFeaturedProducts(data.slice(0, 9));
-      } catch (error) {
-        console.error("Error al cargar productos destacados:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAndSetProducts();
-  }, []);
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!quote?.allowPayment) {
+      alert("Pago bloqueado por feriado.");
+      return;
+    }
+    alert("Pago procesado");
+    localStorage.removeItem("cart");
+    router.push("/");
+  };
 
   return (
-    <>
-      <section
-        className="text-center"
-        style={{
-          padding: "4rem 1rem",
-          background: "linear-gradient(135deg, #eaf1ff, #fff)",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem", fontWeight: 700, marginBottom: "1rem" }}>
-          Bienvenido a Los Tralaleros
-        </h1>
-        <p className="lead fs-5" style={{ color: "#444" }}>
-          La más alta calidad en merchandasing de videojuegos
-        </p>
-      </section>
+    <form onSubmit={handleSubmit}>
+      <input type="date" onChange={e => setShippingDate(e.target.value)} />
+      <select onChange={e => setShippingType(e.target.value)}>
+        <option value="standard">Estándar</option>
+        <option value="express" disabled={quote && !quote.allowExpress}>
+          Express
+        </option>
+      </select>
 
-      
-      <Carousel fade style={{ maxWidth: "100%", margin: "0 auto" }}>
-        <Carousel.Item style={{ height: "400px", backgroundColor: "#333" }}>
-          <Image
-            src="/SilksongLogo.jpg"
-            fill
-            style={{ objectFit: "cover" }}
-            className="d-block w-100"
-            alt="Hornet"
-            priority={true}
-          />
-          <Carousel.Caption
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            <h5>Nueva Merch de Silksong</h5>
-            <p>
-              Debido al lanzamiento de Hollow Knight: Silksong, hemos lanzado
-              nueva Merch.
-            </p>
-          </Carousel.Caption>
-        </Carousel.Item>
+      {quote && <p>{quote.message}</p>}
+      {error && <p>{error}</p>}
 
-        <Carousel.Item style={{ height: "400px", backgroundColor: "#333" }}>
-          <Image
-            src="/DoomDarkAges.png"
-            fill
-            style={{ objectFit: "cover" }}
-            className="d-block w-100"
-            alt="Doomslayer"
-          />
-          <Carousel.Caption
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            <h5>Nueva Merch de Doom</h5>
-            <p>
-              Con el nuevo lanzamiento de Doom The Dark Ages, lanzamos nueva
-              merch.
-            </p>
-          </Carousel.Caption>
-        </Carousel.Item>
-
-        <Carousel.Item style={{ height: "400px", backgroundColor: "#333" }}>
-          <Image
-            src="/TheBattleCatsLogo.png"
-            fill
-            style={{ objectFit: "cover" }}
-            className="d-block w-100"
-            alt="Battlecats"
-          />
-          <Carousel.Caption
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            <h5>Merch de Battlecats</h5>
-            <p>
-              Colaboración oficial con The Battle Cats, ¡nueva merch ya
-              disponible!
-            </p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
-
-      
-      <section className="container py-5">
-        <h2 className="text-center mt-4 mb-4">Productos Destacados</h2>
-        
-        {isLoading ? (
-          <div className="text-center py-5">
-            <p>Cargando productos destacados...</p>
-          </div>
-        ) : (
-          <div className="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
-            {featuredProducts.map((product) => (
-              <div className="col" key={product.id}>
-                <ProductCard product={product} />
-              </div>
-            ))}
-            
-            {featuredProducts.length === 0 && (
-              <div className="col-12 text-center">
-                <p>No hay productos destacados disponibles en este momento.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="text-center mt-5 mb-4">
-          <Link href="/main/productos" legacyBehavior>
-            <a className="btn btn-primary btn-lg">Ver todo el catálogo</a>
-          </Link>
-        </div>
-      </section>
-    </>
+      <button disabled={!quote?.allowPayment}>
+        Confirmar pago (${total})
+      </button>
+    </form>
   );
 }
