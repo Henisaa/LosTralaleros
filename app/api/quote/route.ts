@@ -5,16 +5,14 @@ type Holiday = {
   fecha: string; // YYYY-MM-DD
 };
 
-const INTERNAL_TOKEN = process.env.CHECKOUT_API_TOKEN;
-
 // ---------- Utils ----------
-function isWeekend(dateStr: string) {
+function isWeekend(dateStr: string): boolean {
   const d = new Date(dateStr + "T00:00:00");
   const day = d.getDay();
   return day === 0 || day === 6;
 }
 
-function addDays(dateStr: string, days: number) {
+function addDays(dateStr: string, days: number): string {
   const d = new Date(dateStr + "T00:00:00");
   d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
@@ -27,20 +25,12 @@ async function fetchHolidays(year: number): Promise<Holiday[]> {
   if (!res.ok) {
     throw new Error("Error consultando API de feriados");
   }
+
   return res.json();
 }
 
 // ---------- Endpoint ----------
 export async function POST(req: Request) {
-  // 🔐 Protección del backend
-  const auth = req.headers.get("authorization");
-  if (!auth || auth !== `Bearer ${INTERNAL_TOKEN}`) {
-    return NextResponse.json(
-      { ok: false, error: "No autorizado" },
-      { status: 401 }
-    );
-  }
-
   try {
     const {
       shippingDate,
@@ -58,7 +48,7 @@ export async function POST(req: Request) {
     const year = Number(shippingDate.substring(0, 4));
     const holidays = await fetchHolidays(year);
 
-    const holiday = holidays.find((h) => h.fecha === shippingDate) || null;
+    const holiday = holidays.find(h => h.fecha === shippingDate) || null;
     const weekend = isWeekend(shippingDate);
 
     let allowPayment = true;
