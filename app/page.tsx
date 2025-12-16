@@ -1,72 +1,24 @@
-"use client";
+import Link from "next/link";
 
-import { useCart } from "@/app/about/context/CartContext";
-import { useRouter } from "next/navigation";
-import { useState, useEffect, FormEvent } from "react";
-
-const API_TOKEN = "los-tralaleros-2025";
-
-export default function PagoPage() {
-  const { cart } = useCart();
-  const router = useRouter();
-
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-  const [shippingDate, setShippingDate] = useState("");
-  const [shippingType, setShippingType] = useState("standard");
-  const [quote, setQuote] = useState<any>(null);
-  const [error, setError] = useState("");
-
-  const fetchQuote = async () => {
-    const res = await fetch("/api/quote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_TOKEN}`
-      },
-      body: JSON.stringify({ shippingDate, shippingType, cartTotal: total })
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error);
-      setQuote(null);
-      return;
-    }
-    setQuote(data);
-  };
-
-  useEffect(() => {
-    if (shippingDate) fetchQuote();
-  }, [shippingDate, shippingType]);
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!quote?.allowPayment) {
-      alert("Pago bloqueado por feriado.");
-      return;
-    }
-    alert("Pago procesado");
-    localStorage.removeItem("cart");
-    router.push("/");
-  };
-
+export default function HomePage() {
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="date" onChange={e => setShippingDate(e.target.value)} />
-      <select onChange={e => setShippingType(e.target.value)}>
-        <option value="standard">Estándar</option>
-        <option value="express" disabled={quote && !quote.allowExpress}>
-          Express
-        </option>
-      </select>
+    <main className="container my-5 text-center">
+      <h1 className="mb-4">Los Tralaleros</h1>
 
-      {quote && <p>{quote.message}</p>}
-      {error && <p>{error}</p>}
+      <p className="lead mb-4">
+        Plataforma de comercio electrónico con validación de despacho
+        mediante API pública de feriados legales en Chile.
+      </p>
 
-      <button disabled={!quote?.allowPayment}>
-        Confirmar pago (${total})
-      </button>
-    </form>
+      <div className="d-flex justify-content-center gap-3">
+        <Link href="/main/productos" className="btn btn-primary btn-lg">
+          Ver productos
+        </Link>
+
+        <Link href="/main/pago" className="btn btn-success btn-lg">
+          Ir al pago
+        </Link>
+      </div>
+    </main>
   );
 }
